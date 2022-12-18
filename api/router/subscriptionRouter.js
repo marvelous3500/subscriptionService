@@ -1,6 +1,4 @@
 import * as subscriptionController from '../Controller/subscriptionController'
-import { validateSubscription as  validate } from '../middleware/subscriptionValidation'
-import Joi from 'joi'
 
 import express from 'express'
 import { response } from 'express';
@@ -20,12 +18,10 @@ router.get('/un_subscribe/:id', async  (req, res) => {
 
 
 router.post('/', async (req, res) => {
-
-    const validateData = await Joi.validate(req.body,validate);
-
-  if (validateData.error) {
-    return res.status(400).send(validateData.error.details[0].message)
-  }
+   // const validateData = await Joi.validate(req.body,validate);
+//   if (validateData.error) {
+//     return res.status(400).send(validateData.error.details[0].message)
+//   }
 
     const subsription = {
         name: req.body.name,
@@ -59,3 +55,5 @@ router.get('/', async (req, res) => {
     }
 
 })
+
+module.exports = router;

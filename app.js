@@ -1,7 +1,15 @@
-const cors = require("cors");
-const express = require("express");
-const morgan = require("morgan");
+import cors  from 'cors';
+import express from 'express';
+import morgan from'morgan';
+
 require("dotenv").config();
+
+import planRouter from './api/router/planRouter'
+import  subscriptionRouter from './api/router/subscriptionRouter'
+
+const bodyParser = require ('body-parser');
+
+
 const port = process.env.PORT || 3000;
 
 const app = express();
@@ -20,30 +28,18 @@ app.use(
   })
 );
 
-//Enable cors
+// Enable cors
 app.use(cors());
 app.use(morgan("common"));
 
-app.get("/api", (req, res) => {
-  const response = new Response(
-    true,
-    200,
-    `Welcome to Sequelize Project ${port}`
-  );
-  res.status(response.code).json(response);
-});
+app.use(bodyParser.json({ type: 'application/json' }));
+app.get('/api/', (req, res) => res.send('Welcome to subscription service'));
+app.use('/api/plan',planRouter);
+app.use('/api/subscription', subscriptionRouter);
 
-//Handling unhandle routes
-app.all("*", (req, res, next) => {
-  const response = new Response(
-    false,
-    404,
-    `Page not found. Can't find ${req.originalUrl} on this server`
-  );
-  return res.status(response.code).json(response);
-});
+
 
 //listening to port
 app.listen(port, () => {
-  console.log(`Welcome to Sequelize Project running on port ${port}`);
+  console.log(`Welcome to subscription service running on port ${port}`);
 });

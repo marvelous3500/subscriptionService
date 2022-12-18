@@ -1,7 +1,8 @@
 import * as subscriptionService from  '../service/subscriptionService'
 import *  as plainSeverice from '../service/planService'
 
-const cron = require('node-cron');
+var cron = require('node-cron');
+
 
 
 export async function subscribe(subscription){
