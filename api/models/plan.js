@@ -3,7 +3,7 @@
 const Sequelize = require("sequelize");
 const sequelize = require("../util/database")
 
-  const Plan = sequelize.define("plan", {
+  const Plan = sequelize.define("Plan", {
     id: {
          type:Sequelize.INTEGER,
          autoIncrement: true,
@@ -29,8 +29,6 @@ const sequelize = require("../util/database")
     });
 
     module.exports = Plan;
-
- 
  
 
   // sequelize-cli db:migrate

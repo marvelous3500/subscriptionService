@@ -2,6 +2,7 @@
 import  * as planService from '../service/planService'
 
 export  async function create(plan){
+    console.log(plan.name)
     let isExitedPlan  = await planService.getPlanByName(plan.name);
 
     if(isExitedPlan){

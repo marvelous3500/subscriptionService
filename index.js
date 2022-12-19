@@ -1,4 +1,4 @@
-const sequelize = require("./util/database");
+const sequelize = require("./api/util/database");
 const Plane = require("./models/plan");
 const Subscription = require("./models/subscription");
 

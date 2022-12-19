@@ -4,7 +4,7 @@ const sequelize = require("../util/database")
 
 
 
-  const Subscription = sequelize.define("subscription", {
+  const Subscription = sequelize.define("Subscription", {
     id: {
          type:Sequelize.INTEGER,
          autoIncrement: true,

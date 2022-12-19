@@ -1,7 +1,5 @@
 import * as planController from '../Controller/PlanController'
 import express from 'express'
-import { validatePlan as  validate } from '../middleware/planValidation'
-import Joi from 'joi'
 
 
 var router = express.Router()
@@ -20,11 +18,18 @@ router.get('/:name', async (req, res) => {
 
 router.post('/', async (req, res) => {
 
-  const validateData = await Joi.validate(req.body,validate);
+  // const schema = Joi.object().keys({
+  //   name: Joi.string().alphanum().min(2).max(30).required(),
+  //   price: Joi.string().alphanum().min(2).max(30).required(),
+  //   discription: Joi.string().alphanum().min(2).max(30).required()
+  
+  // })
 
-  if (validateData.error) {
-    return res.status(400).send(validateData.error.details[0].message)
-  }
+  // schema.validate(req.body,schema);
+
+  // if (validateData.error) {
+  //   return res.status(400).send(validateData.error.details[0].message)
+  // }
 
   const plan = {
     name: req.body.name,
@@ -36,7 +41,7 @@ router.post('/', async (req, res) => {
     return res.status(200).json(await planController.create(plan));
 
   } catch (error) {
-    return res.json( {message: error.message, status: error.status})
+    return res.json( {message: error.message}).status(error.status);
   }
 })
 
@@ -63,3 +68,5 @@ router.delete('/:id', async (req, res) =>{
         return  res.status({message: error})
     }
 })
+
+module.exports = router;
