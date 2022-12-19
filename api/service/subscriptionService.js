@@ -1,6 +1,5 @@
 import { where } from 'sequelize';
-import Subscription from '../../models/subscription';
-const Plan =require('../..').Subscription
+const Subscription =require('../models').Subscription
 
 export async function create(subscription){
     subscription.status = true;
