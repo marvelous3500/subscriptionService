@@ -4,9 +4,10 @@
   "description": "this app is use for subscription plan and more ",
   "main": "app.js ",
   "scripts": {
-    "build": "babel src -d lib",
+    "build": "babel api -d lib",
     "start": "nodemon app.js --watch server --exec babel-node",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:dev": "nodemon app.js --legacy-watch --exec babel-node"
   },
   "author": "marvelous sylvester",
   "license": "ISC",
@@ -20,6 +21,7 @@
     "json": "^11.0.0",
     "morgan": "^1.10.0",
     "node-cron": "^3.0.2",
+    "nodemailer": "^6.8.0",
     "pg": "^8.8.0",
     "postgres": "^3.3.2",
     "sequelize": "^6.27.0",

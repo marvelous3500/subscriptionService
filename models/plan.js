@@ -3,6 +3,8 @@
 const Sequelize = require("sequelize");
 const sequelize = require("../util/database")
 
+module.exports = (sequelize, DataTypes) => {
+
   const Plan = sequelize.define("Plan", {
     id: {
          type:Sequelize.INTEGER,
@@ -26,9 +28,10 @@ const sequelize = require("../util/database")
         defaultValue: sequelize.literal('CURRENT_TIMESTAMP'),
         allowNull: false
     }
-    });
+    
+    }, {});
 
-    module.exports = Plan;
- 
+    return Plan;
+    
+  }
 
-  // sequelize-cli db:migrate

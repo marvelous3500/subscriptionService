@@ -1,5 +1,5 @@
 import { where } from 'sequelize';
-const Plan =require('../models').Plan
+const Plan =require('../../models').Plan
 
 export async function create(plan){
     let createdPlan = await Plan.create(plan);

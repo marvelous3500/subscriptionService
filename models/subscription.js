@@ -4,7 +4,8 @@ const sequelize = require("../util/database")
 
 
 
-  const Subscription = sequelize.define("Subscription", {
+module.exports = (sequelize, DataTypes) => {
+  const Subscription = sequelize.define("subscription", {
     id: {
          type:Sequelize.INTEGER,
          autoIncrement: true,
@@ -52,7 +53,13 @@ const sequelize = require("../util/database")
         defaultValue: sequelize.literal('CURRENT_TIMESTAMP'),
         allowNull: false
     }
-    });
+    }, {}) 
+
+    Subscription.associate = function(models) {
+      // associations can be defined here
+      Subscription.belongsTo(models.Plan)
+    }
+
+    return Subscription;
  
-module.exports = Subscription;
-  // sequelize-cli db:migrate
+  }
