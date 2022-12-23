@@ -1,4 +1,5 @@
 import * as subscriptionController from '../Controller/subscriptionController'
+import *  as plainController from '../Controller/PlanController'
 
 import express from 'express'
 import { response } from 'express';
@@ -15,8 +16,6 @@ router.get('/un_subscribe/:id', async  (req, res) => {
 
 })
 
-
-
 router.post('/', async (req, res) => {
    // const validateData = await Joi.validate(req.body,validate);
 //   if (validateData.error) {
@@ -28,10 +27,15 @@ router.post('/', async (req, res) => {
         type: req.body.type,
         discription: req.body.discription,
         subsctiption_start: req.body.subsctiption_start,
-        subsctiption_end: req.body.subsctiption_end
+        subsctiption_end: req.body.subsctiption_end,
+        plainId: req.body.plainId
     }
 
     try { 
+        let plan = plainController.getPlanById(subsription.plainId);
+        if (!plan) {
+            return res.json("plain not found").status(404);
+        }
        let  result =  await subscriptionController.subscribe(subsription);
        return res.json(result).status(201);
     } catch (error) {

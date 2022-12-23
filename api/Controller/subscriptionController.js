@@ -1,19 +1,16 @@
 import * as subscriptionService from  '../service/subscriptionService'
 import *  as plainSeverice from '../service/planService'
+require("dotenv").config();
+import * as producer from '../producer/sendSubscriptionNotification'
 
 var cron = require('node-cron');
 
-
-
 export async function subscribe(subscription){
-
-    if(! await plainSeverice.getPlanById(subscription.getPlainId)){
-        throw new Error("You are subscribing to a plan that does not exist");
-    }
-
     vilidateSubscriptionDate(subscription.subsctiption_start, subscription.subsctiption_end)
-
-    return subscriptionService.create(subscription);
+    let createdSubscribtion = await subscriptionService.create(subscription);
+    await producer.produce(generateSubscriptionMessage(subscription, subscription.email));
+    
+    return createdSubscribtion;
 }
 
 
@@ -22,13 +19,13 @@ export  async function getAllSubscriptions(limits, offset, type){
 }
 
 
-export async function unsubscription(id){
+export async function unsubscription(id, userEmail){
     let subscription = await subscriptionService.getSubscritionById(id);
     subscription.status = false;
     subscription.renew = false;
 
-    return subscriptionService.update(subscription);
-
+    let response = await subscriptionService.update(subscription);
+    await producer.produce(generateSubscriptionMessage(response, userEmail));
 }
 
 // create a method that will auto renew subscription plan  will call the payment servcie and make payment 
@@ -80,4 +77,17 @@ function numbersOfdays(date_1, date_2) {
     let difference = date_1.getTime() - date_2.getTime();
     let totalDays = Math.ceil(difference / (1000 * 3600 * 24));
     return   totalDays
+}
+
+
+function generateSubscriptionMessage(subscription, userEmail){
+
+    let subscriptionMessage  = {
+        "senderEmail":process.env.EMAIL_SENDER,
+        "recipientEmail": userEmail,
+        "message": "Hello, thanks you for subscribing to  " + subscription.name,
+        "subject": "Subscription to " + plan.name
+    }
+
+    return subscriptionMessage;
 }

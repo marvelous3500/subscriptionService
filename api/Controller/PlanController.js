@@ -16,6 +16,9 @@ export async function getPlanByName(name){
     return planService.getPlanByName(name);
 }
 
+export async function getPlanById(id){
+    return planService.getPlanById(id);
+}
 export async function deleteById(id){
     planService.deleteById(id);
 }
