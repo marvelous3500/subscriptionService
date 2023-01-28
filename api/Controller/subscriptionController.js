@@ -42,7 +42,7 @@ export async function unsubscription(id, email){
     }
 
 }
-// unsubscription to  all daily subscriptions 
+
 cron.schedule('0 0 1 * *', async () => {
     let todaysDate = new Date().toString();
     const dailySubscritions = await Subscription.findAll({
@@ -63,8 +63,7 @@ cron.schedule('0 0 1 * *', async () => {
          await producer.produce(generateSubscriptionMessage(dailySubscrition, userEmail));
         }
     });
-
-//  unsubscription to a all monthly subscriptions   
+  
 cron.schedule('*/1 * * * *',async () => {
     let todaysDate = new Date().toString();
     const monthly = await Subscription.findAll({
@@ -83,7 +82,7 @@ cron.schedule('*/1 * * * *',async () => {
         vilidateSubscriptionDate(subsctiption_start, subsctiption_end, type);
         await unsubscription(id, userEmail);
         await producer.produce(generateSubscriptionMessage(monthlySubscrition, userEmail));
-        
+
         }
     })
 
