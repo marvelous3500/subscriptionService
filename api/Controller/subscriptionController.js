@@ -66,9 +66,8 @@ cron.schedule('0 0 1 * *', async () => {
 
 //  unsubscription to a all monthly subscriptions   
 cron.schedule('*/1 * * * *',async () => {
-      let  todaysDate = new Date().toString();
-
-        const monthly = await Subscription.findAll({
+    let todaysDate = new Date().toString();
+    const monthly = await Subscription.findAll({
             where: {
                 type: 'MONTHLY',
                 renew: true,
@@ -77,13 +76,14 @@ cron.schedule('*/1 * * * *',async () => {
             }
         });
  
-        for (let monthlySubscrition of monthly) {
-            let userEmail = 'marvelous3500@gmail.com'; /// for testing  purposes
-            let { id, subsctiption_start, subsctiption_end, type } = monthlySubscrition;
+    for (let monthlySubscrition of monthly) {
+        let userEmail = 'marvelous3500@gmail.com'; /// for testing  purposes
+        let { id, subsctiption_start, subsctiption_end, type } = monthlySubscrition;
 
-            vilidateSubscriptionDate(subsctiption_start, subsctiption_end, type);
-            await unsubscription(id, userEmail);
-            await producer.produce(generateSubscriptionMessage(monthlySubscrition, userEmail));
+        vilidateSubscriptionDate(subsctiption_start, subsctiption_end, type);
+        await unsubscription(id, userEmail);
+        await producer.produce(generateSubscriptionMessage(monthlySubscrition, userEmail));
+        
         }
     })
 
