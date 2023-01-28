@@ -1,65 +1,75 @@
 'use strict';
-const Sequelize = require("sequelize");
-const sequelize = require("../util/database")
-
-
 
 module.exports = (sequelize, DataTypes) => {
-  const Subscription = sequelize.define("subscription", {
-    id: {
-         type:Sequelize.INTEGER,
-         autoIncrement: true,
-         primaryKey: true
+  let subscription= sequelize.define(
+    'subscription',
+    {
+      id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        primaryKey: true,
+        autoIncrement: true
+      },
+      plan: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'plan',
+          key: 'id'
+        }
+      },
+     name:{
+        type: DataTypes.STRING(255),
+        allowNull: true,
+      },
+    
+      subsctiption_start: {
+          type: DataTypes.DATE,
+          allowNull: false
+        },
+        type: {
+          type:DataTypes.ENUM('MONTHLY','DAYLY','YEARLY')
         },
 
-    name:{
-        type: Sequelize.STRING,
-        allowNull: false
+        subsctiption_end: {
+          type: DataTypes.DATE,
+          allowNull: false
+        },
+      status: {
+        type: DataTypes.BOOLEAN,
+        allowNull: true,
+        default:true
       },
-
-    type: {
-      type: Sequelize.ENUM("DAILY", "MONTHLT", "YEARLY")
-        
+      password:{
+        type: DataTypes.STRING,
+        allowNull:true,
+        set(value) {
+          // Storing passwords in plaintext in the database is terrible.
+          // Hashing the value with an appropriate cryptographic hash function is better.
+          this.setDataValue('password', hash(value));
+        }
+      },
+      renew: {
+        type: DataTypes.BOOLEAN,
+        allowNull: true
+      }
     },
-
-    discription: {
-        type: Sequelize.STRING,
-        allowNull: false
-      },
-
-      status:{
-        type: Sequelize.BOOLEAN,
-        allowNull: false,
-        defaultValue: sequelize.literal(true)
-      },
-
-      renew:{
-        type: Sequelize.BOOLEAN,
-        allowNull: false,
-        defaultValue: sequelize.literal(false)
-      },
-    subsctiption_start: {
-        type: 'TIMESTAMP',
-        allowNull: true
-      },
-
-    subsctiption_end: {
-        type: 'TIMESTAMP',
-        allowNull: true
-      },
-      
-      createdAt:{
-        type: 'TIMESTAMP',
-        defaultValue: sequelize.literal('CURRENT_TIMESTAMP'),
-        allowNull: false
+    {
+      tableName: 'subscription',
+      paranoid: true,
+     // timestamps:false,
     }
-    }, {}) 
+  );
 
-    Subscription.associate = function(models) {
-      // associations can be defined here
-      Subscription.belongsTo(models.Plan)
-    }
-
-    return Subscription;
- 
+  subscription.associate = (models) => {
+    subscription.belongsTo(models.plan, {
+      foreignKey: 'plan',
+      as: 'plan_subscription',
+      constraints: false
+    });
   }
+
+  //sequelize.sync({alter:true}) // force
+
+  return subscription
+};

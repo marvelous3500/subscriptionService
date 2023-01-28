@@ -3,6 +3,7 @@ require("dotenv").config();
 
 
 export async function produce( message){
+    console.log("@@@@@@@@@@@ am called @@@@@@@@@@ ");
     try {
 
          const clientId =  "subscription-service";

@@ -8,11 +8,16 @@ router.get('/:name', async (req, res) => {
   let { name } = req.params
   
   try {
-    let result = await planController.getPlanByName(name)
-    console.log(`result`, result)
-    return res.status(200).json(result)
+    let result = await planController.getPlanByName(name);
+
+    if(!result){
+     return res.status(404).json({message: 'Plan not found'});
+    }
+
+    return res.status(200).json(result);
+
   } catch (error) {
-    return res.json({mesage: error.mesage, status: error.status})
+    return res.status(500).json({message: error});
   }
 })
 
@@ -38,31 +43,32 @@ router.post('/', async (req, res) => {
   }
 
   try {
-    return res.status(200).json(await planController.create(plan));
+    let result = await planController.create(plan)
+    return res.status(200).json(result);
 
   } catch (error) {
-    return res.json( {message: error.message}).status(error.status);
+    return res.status(500).json( {message: "server error"});
   }
 })
 
-router.get('/:offset, limit', async (req,res) => {
-    let limit = req.query.offset;
+router.get('/', async (req,res) => {
+    let limit = req.query.limit;
     let offset = req.query.offset;
-
+  
     try{
-
         const plans = await planController.getAllPlan(offset, limit);
-        return res.status(201).json(plans);
+        return res.status(200).json(plans);
 
     }catch(error){
-        return res.json({message: error.message, status: error.status})
+        return res.status("200").json({message: error});
     }
 
 })
 
 router.delete('/:id', async (req, res) =>{
+  let {id} = req.params
     try{
-        await planController.deleteById(req.params.id);
+        await planController.deleteById(id);
         return res.status(200);
     }catch(error){
         return  res.status({message: error})

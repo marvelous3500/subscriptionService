@@ -1,28 +1,46 @@
+const db = require('../../models')
+const Plan = db.plan
+import { where } from 'sequelize';
 
-import  * as planService from '../service/planService'
 
 export  async function create(plan){
-    console.log(plan.name)
-    let isExitedPlan  = await planService.getPlanByName(plan.name);
+    let createdPlan;
+    try {
+         createdPlan  = await Plan.create(plan);
+    } catch (error) {
+        console.log(error);
 
-    if(isExitedPlan){
-        throw new Error("Plan already exists");
     }
-
-    return planService.create(plan)
+    return createdPlan
 }
 
 export async function getPlanByName(name){
-    return planService.getPlanByName(name);
+   
+    let plan = await Plan.findOne({where:{
+            name:name
+        }})
+        
+    return plan;
 }
 
 export async function getPlanById(id){
-    return planService.getPlanById(id);
+    const plan =  await Plan.findOne({where:{id: id }})
+    return plan;
 }
+
 export async function deleteById(id){
-    planService.deleteById(id);
+    try {
+        await Plan.destroy({where:{id: id}});
+    } catch (error) {
+        console.error(error);
+    }
+     
 }
 
 export async function getAllPlan(offset, limit){
-    return planService.getAllPlan(offset, limit);
+    const plans = await Plan.findAll({
+        offset: offset,
+        limit: limit
+    })            
+    return plans;
 }

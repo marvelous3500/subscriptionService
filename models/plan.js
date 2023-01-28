@@ -1,37 +1,41 @@
 'use strict';
 
-const Sequelize = require("sequelize");
-const sequelize = require("../util/database")
-
 module.exports = (sequelize, DataTypes) => {
-
-  const Plan = sequelize.define("Plan", {
-    id: {
-         type:Sequelize.INTEGER,
-         autoIncrement: true,
-         primaryKey: true,
-         allowNull:false
-        },
-
-    name:{
-        type: Sequelize.STRING,
+  let plan = sequelize.define(
+    'plan',
+    {
+      id: {
+        type: DataTypes.INTEGER,
         allowNull: false,
-      },
-
-    price: {
-        type: Sequelize.STRING,
-        allowNull: false,
+        primaryKey: true,
+        autoIncrement: true
       },
       
-      createdAt:{
-        type: 'TIMESTAMP',
-        defaultValue: sequelize.literal('CURRENT_TIMESTAMP'),
-        allowNull: false
+      price: {
+          type: DataTypes.INTEGER,
+          allowNull: false
+        },
+    
+      name: {
+        type: DataTypes.STRING(250),
+        allowNull: true,
+      },
+     
+    },
+    {
+      tableName: 'plan',
+      freezeTableName: true,
     }
-    
-    }, {});
+  );
 
-    return Plan;
-    
-  }
+  plan.associate = function(models) {
+    plan.hasMany(models.subscription, 
+    {
+      foreignKey: 'id',
+    as: 'Plan_pk',
+    constraints: false
+});   
+}
+  return plan
+};
 

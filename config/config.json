@@ -1,8 +1,8 @@
 {
   "development": {
     "username": "postgres",
-    "password": "kirimarvu",
-    "database": "subscription",
+    "password": null,
+    "database": "microservice",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },

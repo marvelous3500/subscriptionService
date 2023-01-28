@@ -1,45 +1,50 @@
 import * as subscriptionController from '../Controller/subscriptionController'
 import *  as plainController from '../Controller/PlanController'
-
 import express from 'express'
-import { response } from 'express';
+const db = require('../../models') // use inport 
+const Plan = db.plan
+import { where } from 'sequelize';
 
 const router = express.Router();
 
-router.get('/un_subscribe/:id', async  (req, res) => {
+router.put('/un_subscribe/:id', async  (req, res, next) => {
    let  {id} = req.params;
+   let {email} = req.body;
    try{
-        await subscriptionController.unsubscription(id);
-        return res.json({mesage: "you have unsubscribed successfully"})
+      await subscriptionController.unsubscription(id,  email);
+      res.status(200).json({ message:'you have subscribed to this subscription'})
    }catch(error){
-    return res.json({mesage: error.mesage, status: error.status})};
+    res.status(500).json({message: "server errror"})
+   }
 
 })
 
 router.post('/', async (req, res) => {
-   // const validateData = await Joi.validate(req.body,validate);
+//    const validateData = await Joi.validate(req.body,validate);
 //   if (validateData.error) {
-//     return res.status(400).send(validateData.error.details[0].message)
+//      res.status(400).send(validateData.error.details[0].message)
 //   }
-
-    const subsription = {
-        name: req.body.name,
-        type: req.body.type,
-        discription: req.body.discription,
-        subsctiption_start: req.body.subsctiption_start,
-        subsctiption_end: req.body.subsctiption_end,
-        plainId: req.body.plainId
-    }
-
+    let {name,type,discription,subsctiption_start,subsctiption_end, planId} = req.body;
     try { 
-        let plan = plainController.getPlanById(subsription.plainId);
+        const plan = await Plan.findOne({ where:{id:planId}})
         if (!plan) {
-            return res.json("plain not found").status(404);
+         res.status(404).json("plain not found");
         }
-       let  result =  await subscriptionController.subscribe(subsription);
-       return res.json(result).status(201);
+        const subsription = {
+            name: name,
+            type: type,
+            discription:discription,
+            subsctiption_start:subsctiption_start,
+            subsctiption_end: subsctiption_end,
+            plan:plan.id,
+            status:true
+        }
+
+       const result = await subscriptionController.subscribe(subsription);
+       res.json(result).status(201);
+
     } catch (error) {
-        return res.json({message: error, status: error.status})
+        res.status(500).json({message: "server errror"})
     }
 
 })
@@ -50,11 +55,10 @@ router.get('/', async (req, res) => {
         let offset = req.query.offset;
         let type = req.query.type;
 
-        let subscribes =  await subscriptionController.getAllSubscriptions(limit, offset, type);
-        return response.json(subscribes).status(200);
+        const subscribes =  await subscriptionController.getAllSubscriptions(limit, offset, type);
+        res.json(subscribes).status(200);
     } catch (error) {
-
-        return res.json({message: error, status: error.status})
+       res.json({message: "server error", status: 500})
         
     }
 
