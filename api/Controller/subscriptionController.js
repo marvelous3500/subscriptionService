@@ -86,7 +86,7 @@ cron.schedule('*/1 * * * *',async () => {
         for (let monthlySubscrition of monthly) {
             let userEmail = 'marvelous3500@gmail.com'; /// for testing  purposes
             let { id, subsctiption_start, subsctiption_end, type } = monthlySubscrition;
-
+            
             vilidateSubscriptionDate(subsctiption_start, subsctiption_end, type);
             await unsubscription(id, userEmail);
             await producer.produce(generateSubscriptionMessage(monthlySubscrition, userEmail));
@@ -95,18 +95,16 @@ cron.schedule('*/1 * * * *',async () => {
 
 
 function  vilidateSubscriptionDate(startDay, endDay, type) {
-    subscribetionStartDate = startDay;
-    subscribeEndDate = new endDay;
 
-    if(type == "DAILY" && numbersOfdays(subscribetionStartDate,subscribeEndDate) > 1){
+    if(type == "DAILY" && numbersOfdays(startDay,endDay) > 1){
         throw new Error(" Your subscription plan is not a daily subscription");
     }
 
-    if(type == "MONTHLY" && numbersOfdays(subscribetionStartDate, vilidateSubscriptionDate) > 31){
+    if(type == "MONTHLY" && numbersOfdays(startDay, vilidateSubscriptionDate) > 31){
         throw new Error(" Your subscription plan is not a monthly subscription");
     }
 
-    if(type == "YEARLY" && numbersOfdays(subscribetionStartDate, vilidateSubscriptionDate) <  365 ){
+    if(type == "YEARLY" && numbersOfdays(startDay, vilidateSubscriptionDate) <  365 ){
         throw new Error(" Your subscription plan is not a yearly subscription");
     }
 
