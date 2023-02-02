@@ -15,7 +15,7 @@ export async function subscribe(subscription){
         console.error(error)
         throw new  Error(error.message)
     }
-
+    
     return createdSubscribtion;
 }
 
@@ -87,7 +87,7 @@ cron.schedule('*/1 * * * *',async () => {
     })
 
 
-function  vilidateSubscriptionDate(startDay, endDay, type) {
+function vilidateSubscriptionDate(startDay, endDay, type) {
 
     if(type == "DAILY" && numbersOfdays(startDay,endDay) > 1){
         throw new Error(" Your subscription plan is not a daily subscription");
